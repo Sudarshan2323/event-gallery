@@ -51,6 +51,7 @@ Route::post('/event/{slug}/booth', [GuestController::class, 'boothUpload'])->nam
 Route::get('/event/{event}/slideshow', [GuestController::class, 'slideshowById'])->whereNumber('event')->name('guest.event.slideshow');
 Route::get('/event/{slug}/slideshow', [GuestController::class, 'slideshow'])->name('guest.event.slideshow.slug');
 Route::get('/photo/{id}', [GuestController::class, 'showPhoto'])->name('guest.photo.show');
+Route::get('/photo/{id}/print', [GuestController::class, 'printPhoto'])->name('guest.photo.print');
 Route::get('/photo/{id}/download', [GuestController::class, 'downloadPhoto'])->name('guest.photo.download');
 Route::get('/qrcode/download', [GuestController::class, 'downloadQr'])->name('guest.qrcode.download');
 

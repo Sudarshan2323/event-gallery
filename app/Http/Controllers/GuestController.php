@@ -44,6 +44,13 @@ class GuestController extends Controller
         return view('guest.photo', compact('photo'));
     }
 
+    public function printPhoto($id)
+    {
+        $photo = Photo::with('event')->findOrFail($id);
+
+        return view('guest.photo-print', compact('photo'));
+    }
+
     public function downloadPhoto($id)
     {
         $photo = Photo::findOrFail($id);
@@ -129,8 +136,7 @@ class GuestController extends Controller
         Storage::disk('public')->put($qrPath, $qrCodeSvg);
         $photo->update(['qr_code_path' => $qrPath]);
 
-        // Optional watermarking. If the image library isn't installed, it will no-op.
-        \App\Services\PhotoWatermarkService::apply($photo);
+        // Keep future uploads untouched; print branding is handled separately.
 
         // Fire WebSocket event for real-time guest gallery.
         // If Reverb isn't running locally, we don't want guest uploads to fail.

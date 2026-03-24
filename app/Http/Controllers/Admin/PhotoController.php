@@ -51,8 +51,7 @@ class PhotoController extends Controller
 
             $photo->update(['qr_code_path' => $qrPath]);
 
-            // Apply watermarking (Logo & QR)
-            \App\Services\PhotoWatermarkService::apply($photo);
+            // Keep future uploads untouched; print branding is handled separately.
 
             // Fire WebSocket event for real-time guest gallery.
             // If Reverb isn't running locally, we don't want uploads to fail.

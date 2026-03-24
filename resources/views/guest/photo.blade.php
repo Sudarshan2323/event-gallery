@@ -102,32 +102,11 @@ function shareLink() {
 }
 
 function printPhoto() {
-    const src = @js(Storage::url($photo->image_path));
-    const absolute = new URL(src, window.location.origin).toString();
-
-    const w = window.open('', '_blank');
+    const printUrl = @js(route('guest.photo.print', $photo->id));
+    const w = window.open(printUrl, '_blank', 'noopener');
     if (!w) {
         alert('Popup blocked. Allow popups to print.');
-        return;
     }
-
-    w.document.write(`<!doctype html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Print Photo</title>
-    <style>
-      html, body { height: 100%; margin: 0; }
-      body { display: flex; align-items: center; justify-content: center; background: #000; }
-      img { max-width: 100%; max-height: 100vh; object-fit: contain; }
-    </style>
-  </head>
-  <body>
-    <img src="${absolute}" onload="window.print(); setTimeout(() => window.close(), 600);" />
-  </body>
-</html>`);
-    w.document.close();
 }
 </script>
 @endsection
