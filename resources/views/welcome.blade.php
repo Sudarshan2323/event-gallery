@@ -33,7 +33,7 @@
                         @auth
                             <a href="{{ route('admin.dashboard') }}" class="font-medium text-gray-700 hover:text-indigo-600 transition-colors">Admin Dashboard</a>
                         @else
-                            <a href="{{ route('login') }}" class="inline-flex items-center px-5 py-2.5 rounded-full bg-white text-indigo-600 font-semibold text-sm shadow-sm ring-1 ring-inset ring-indigo-100 hover:bg-gray-50 transition-all">
+                            <a href="{{ route('login', [], false) }}" class="inline-flex items-center px-5 py-2.5 rounded-full bg-white text-indigo-600 font-semibold text-sm shadow-sm ring-1 ring-inset ring-indigo-100 hover:bg-gray-50 transition-all">
                                 Organizer Login
                             </a>
                         @endauth

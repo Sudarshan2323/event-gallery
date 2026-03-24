@@ -46,6 +46,8 @@ Route::middleware('auth')->group(function () {
 use App\Http\Controllers\GuestController;
 Route::get('/event/{slug}', [GuestController::class, 'showEvent'])->name('guest.event.show');
 Route::get('/event/{slug}/download', [GuestController::class, 'downloadEvent'])->name('guest.event.download');
+Route::get('/event/{slug}/booth', [GuestController::class, 'booth'])->name('guest.event.booth');
+Route::post('/event/{slug}/booth', [GuestController::class, 'boothUpload'])->name('guest.event.booth.upload')->middleware('throttle:20,1');
 Route::get('/event/{event}/slideshow', [GuestController::class, 'slideshowById'])->whereNumber('event')->name('guest.event.slideshow');
 Route::get('/event/{slug}/slideshow', [GuestController::class, 'slideshow'])->name('guest.event.slideshow.slug');
 Route::get('/photo/{id}', [GuestController::class, 'showPhoto'])->name('guest.photo.show');

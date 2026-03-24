@@ -57,6 +57,11 @@
                             <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg>
                             Share This Moment
                         </button>
+
+                        <button onclick="printPhoto()" class="flex items-center justify-center w-full h-14 bg-white/10 hover:bg-white/20 text-white font-bold rounded-2xl transition-all border border-white/10">
+                            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 9V4h12v5M6 18h12v2H6v-2zm0-6h12v6H6v-6z"></path></svg>
+                            Print This Photo
+                        </button>
                     </div>
 
                     <div id="toast" class="mt-4 text-center text-green-400 text-sm font-medium hidden">
@@ -94,6 +99,35 @@ function shareLink() {
             setTimeout(() => toast.classList.add('hidden'), 3000);
         });
     }
+}
+
+function printPhoto() {
+    const src = @js(Storage::url($photo->image_path));
+    const absolute = new URL(src, window.location.origin).toString();
+
+    const w = window.open('', '_blank');
+    if (!w) {
+        alert('Popup blocked. Allow popups to print.');
+        return;
+    }
+
+    w.document.write(`<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Print Photo</title>
+    <style>
+      html, body { height: 100%; margin: 0; }
+      body { display: flex; align-items: center; justify-content: center; background: #000; }
+      img { max-width: 100%; max-height: 100vh; object-fit: contain; }
+    </style>
+  </head>
+  <body>
+    <img src="${absolute}" onload="window.print(); setTimeout(() => window.close(), 600);" />
+  </body>
+</html>`);
+    w.document.close();
 }
 </script>
 @endsection

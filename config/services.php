@@ -35,4 +35,9 @@ return [
         ],
     ],
 
+    // Used by the tethered camera / external upload endpoint.
+    'external_upload' => [
+        'token' => env('EXTERNAL_UPLOAD_TOKEN'),
+    ],
+
 ];

@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\PhotoUploaded;
 use App\Models\Event;
 use App\Models\Photo;
 use App\Models\Analytic;
+use App\Support\QrCodeGenerator;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use ZipArchive;
 
@@ -96,6 +99,61 @@ class GuestController extends Controller
             $query->latest();
         }])->firstOrFail();
         return view('guest.slideshow', compact('event'));
+    }
+
+    public function booth($slug)
+    {
+        $event = Event::where('slug', $slug)->firstOrFail();
+
+        return view('guest.booth', compact('event'));
+    }
+
+    public function boothUpload(Request $request, $slug)
+    {
+        $event = Event::where('slug', $slug)->firstOrFail();
+
+        $request->validate([
+            'photo' => 'required|image|mimes:jpeg,jpg,png,webp|max:5120',
+        ]);
+
+        $path = $request->file('photo')->store('events/' . $event->slug . '/booth', 'public');
+
+        $photo = Photo::create([
+            'event_id' => $event->id,
+            'image_path' => $path,
+            'downloads' => 0,
+        ]);
+
+        $qrPath = 'events/' . $event->slug . '/qr/' . $photo->id . '.svg';
+        $qrCodeSvg = QrCodeGenerator::svg(url('/photo/' . $photo->id), 300);
+        Storage::disk('public')->put($qrPath, $qrCodeSvg);
+        $photo->update(['qr_code_path' => $qrPath]);
+
+        // Optional watermarking. If the image library isn't installed, it will no-op.
+        \App\Services\PhotoWatermarkService::apply($photo);
+
+        // Fire WebSocket event for real-time guest gallery.
+        // If Reverb isn't running locally, we don't want guest uploads to fail.
+        try {
+            broadcast(new PhotoUploaded($photo))->toOthers();
+        } catch (\Throwable $e) {
+            Log::warning('Broadcast failed (PhotoUploaded) from booth upload. Is Reverb running?', [
+                'photo_id' => $photo->id,
+                'event_id' => $event->id,
+                'exception' => $e->getMessage(),
+            ]);
+        }
+
+        return response()->json([
+            'photo' => [
+                'id' => $photo->id,
+                'image_url' => Storage::url($photo->image_path),
+                'qr_url' => $photo->qr_code_path ? Storage::url($photo->qr_code_path) : null,
+                'public_url' => route('guest.photo.show', $photo->id),
+                'download_url' => route('guest.photo.download', $photo->id),
+                'event_url' => route('guest.event.show', $event->slug),
+            ],
+        ]);
     }
 
     public function downloadQr(Request $request)

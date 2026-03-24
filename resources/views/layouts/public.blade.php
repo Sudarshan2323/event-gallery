@@ -33,5 +33,7 @@
                 &copy; {{ date('Y') }} {{ config('app.name') }}. All rights reserved.
             </div>
         </footer>
+
+        @stack('scripts')
     </body>
 </html>

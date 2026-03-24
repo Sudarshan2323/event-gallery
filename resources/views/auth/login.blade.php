@@ -2,13 +2,19 @@
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
+    @if (session('error'))
+        <div class="mb-4 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-900">
+            {{ session('error') }}
+        </div>
+    @endif
+
     <div class="mb-6 rounded-xl bg-indigo-50 border border-indigo-100 p-4 text-sm text-indigo-900">
         <p class="font-semibold">Demo Admin Credentials</p>
         <p class="mt-1">Email: <span class="font-mono">admin@event.com</span></p>
         <p>Password: <span class="font-mono">admin123</span></p>
     </div>
 
-    <form method="POST" action="{{ route('login') }}">
+    <form method="POST" action="{{ route('login', [], false) }}">
         @csrf
 
         <!-- Email Address -->
