@@ -82,10 +82,7 @@
             }
 
             .print-header {
-                display: flex;
-                align-items: flex-start;
-                justify-content: space-between;
-                gap: 12px;
+                display: block;
                 margin-bottom: 12px;
             }
 
@@ -115,24 +112,6 @@
                 color: #5f564a;
                 font-size: 13px;
                 line-height: 1.35;
-            }
-
-            .header-thumb {
-                width: 58px;
-                height: 58px;
-                padding: 5px;
-                border-radius: 18px;
-                border: 1px solid #dcc7a6;
-                background: #fff;
-                flex-shrink: 0;
-            }
-
-            .header-thumb img {
-                display: block;
-                width: 100%;
-                height: 100%;
-                border-radius: 12px;
-                object-fit: cover;
             }
 
             .photo-frame {
@@ -278,10 +257,6 @@
                     align-items: stretch;
                 }
 
-                .print-header {
-                    gap: 10px;
-                }
-
                 .overlay-row {
                     flex-direction: column;
                     align-items: stretch;
@@ -320,7 +295,6 @@
 
                 .print-header {
                     margin-bottom: 8px;
-                    gap: 10px;
                     break-after: avoid-page;
                     page-break-after: avoid;
                 }
@@ -339,17 +313,6 @@
                     margin-top: 3px;
                     font-size: 9px;
                     line-height: 1.25;
-                }
-
-                .header-thumb {
-                    width: 44px;
-                    height: 44px;
-                    padding: 4px;
-                    border-radius: 12px;
-                }
-
-                .header-thumb img {
-                    border-radius: 8px;
                 }
 
                 .photo-frame {
@@ -435,10 +398,6 @@
                             @endif
                             &bull; Photo #{{ $photo->id }}
                         </p>
-                    </div>
-
-                    <div class="header-thumb">
-                        <img src="{{ url(Storage::url($photo->image_path)) }}" alt="Photo thumbnail">
                     </div>
                 </div>
 
