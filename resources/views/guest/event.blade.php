@@ -98,10 +98,7 @@
     <div class="flex justify-between items-stretch sm:items-center flex-col sm:flex-row mb-8 gap-4">
         <h2 class="text-2xl font-serif text-gray-900">Event Gallery</h2>
         <div class="flex flex-wrap items-center gap-3">
-            <a href="{{ route('guest.event.booth', $event->slug) }}" target="_blank" class="text-sm font-semibold text-white bg-gray-900 hover:bg-gray-800 px-5 py-2.5 rounded-full shadow-sm flex items-center transition-colors">
-                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h2l2-3h10l2 3h2v13H3V7zm9 10a4 4 0 100-8 4 4 0 000 8z"></path></svg>
-                Selfie Booth
-            </a>
+
             <a href="{{ route('guest.event.download', $event->slug) }}" class="text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 px-5 py-2.5 rounded-full shadow-sm flex items-center transition-colors">
                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
                 Download All Photos

@@ -8,11 +8,11 @@
         </div>
     @endif
 
-    <div class="mb-6 rounded-xl bg-indigo-50 border border-indigo-100 p-4 text-sm text-indigo-900">
+    <!-- <div class="mb-6 rounded-xl bg-indigo-50 border border-indigo-100 p-4 text-sm text-indigo-900">
         <p class="font-semibold">Demo Admin Credentials</p>
         <p class="mt-1">Email: <span class="font-mono">admin@event.com</span></p>
         <p>Password: <span class="font-mono">admin123</span></p>
-    </div>
+    </div> -->
 
     <form method="POST" action="{{ route('login', [], false) }}">
         @csrf

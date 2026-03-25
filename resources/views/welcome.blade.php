@@ -10,7 +10,7 @@
         <link href="https://fonts.bunny.net/css?family=playfair-display:400,600,700|inter:400,500,600,700&display=swap" rel="stylesheet" />
         
         <!-- Styles / Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
+        @include('partials.assets')
         <style>
             .font-serif { font-family: 'Playfair Display', serif; }
             .font-sans { font-family: 'Inter', sans-serif; }

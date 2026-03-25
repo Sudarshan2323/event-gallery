@@ -8,7 +8,7 @@
         <title>{{ $event->event_name }} - Live Slideshow</title>
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=playfair-display:400,600,700|inter:300,400,500,600&display=swap" rel="stylesheet" />
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
+        @include('partials.assets')
         <style>
             body { font-family: 'Inter', sans-serif; background-color: #000; overflow: hidden; }
             .font-serif { font-family: 'Playfair Display', serif; }
