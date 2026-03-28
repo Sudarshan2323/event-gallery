@@ -131,10 +131,19 @@ class GuestController extends Controller
             'downloads' => 0,
         ]);
 
-        $qrPath = 'events/' . $event->slug . '/qr/' . $photo->id . '.svg';
-        $qrCodeSvg = QrCodeGenerator::svg(url('/photo/' . $photo->id), 300);
-        Storage::disk('public')->put($qrPath, $qrCodeSvg);
-        $photo->update(['qr_code_path' => $qrPath]);
+        // Generate QR Code with fallback
+        try {
+            $qrPath = 'events/' . $event->slug . '/qr/' . $photo->id . '.svg';
+            $qrCodeSvg = \App\Support\QrCodeGenerator::svg(url('/photo/' . $photo->id), 300);
+            Storage::disk('public')->put($qrPath, $qrCodeSvg);
+            $photo->update(['qr_code_path' => $qrPath]);
+
+            // Apply branding (requires GD)
+            \App\Services\PhotoWatermarkService::apply($photo);
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error('Booth QR/Branding failed: ' . $e->getMessage());
+        }
+
 
         // Keep future uploads untouched; print branding is handled separately.
 

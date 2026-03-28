@@ -9,6 +9,13 @@
             <h2 class="text-2xl font-bold text-gray-900">QR Codes</h2>
             <p class="text-sm text-gray-500">Event QR opens the gallery. Photo QR opens a specific photo.</p>
         </div>
+        <form method="POST" action="{{ route('admin.qrcodes.regenerate-all') }}">
+            @csrf
+            <button type="submit" class="w-full sm:w-auto px-6 py-2.5 bg-indigo-600 text-white font-bold rounded-xl shadow-lg hover:bg-indigo-700 transition">
+                Regenerate All (Switch to Live Domain)
+            </button>
+        </form>
+
     </div>
 
     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">

@@ -402,7 +402,7 @@
                 </div>
 
                 <div class="photo-frame">
-                    <img class="main-photo" src="{{ url(Storage::url($photo->image_path)) }}" alt="Printable photo">
+                    <img class="main-photo" src="{{ \Illuminate\Support\Facades\Storage::url($photo->image_path) }}" alt="Printable photo">
 
                     <div class="overlay-row">
                         <div class="brand-panel">
@@ -419,7 +419,7 @@
                         @if($photo->qr_code_path)
                             <div class="qr-panel">
                                 <div class="qr-code">
-                                    <img src="{{ url(Storage::url($photo->qr_code_path)) }}" alt="Photo QR code">
+                                    <img src="{{ \Illuminate\Support\Facades\Storage::url($photo->qr_code_path) }}" alt="Photo QR code">
                                 </div>
                                 <div>
                                     <p class="qr-label">Scan To Open</p>

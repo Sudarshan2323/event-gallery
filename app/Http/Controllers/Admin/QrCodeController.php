@@ -43,6 +43,29 @@ class QrCodeController extends Controller
         return back()->with('success', 'Photo QR code regenerated.');
     }
 
+    public function regenerateAll()
+    {
+        $events = Event::all();
+        foreach ($events as $event) {
+            $eventQrPath = 'events/' . $event->slug . '/event-qr.svg';
+            $eventQrSvg = QrCodeGenerator::svg(url('/event/' . $event->slug), 320);
+            Storage::disk('public')->put($eventQrPath, $eventQrSvg);
+            $event->update(['qr_code_path' => $eventQrPath]);
+        }
+
+        $photos = Photo::with('event')->get();
+        foreach ($photos as $photo) {
+            if ($photo->event) {
+                $qrPath = 'events/' . $photo->event->slug . '/qr/' . $photo->id . '.svg';
+                $qrSvg = QrCodeGenerator::svg(url('/photo/' . $photo->id), 300);
+                Storage::disk('public')->put($qrPath, $qrSvg);
+                $photo->update(['qr_code_path' => $qrPath]);
+            }
+        }
+
+        return back()->with('success', 'All QR codes have been regenerated for ' . config('app.url'));
+    }
+
     public function download(Request $request)
     {
         $path = $request->query('path');

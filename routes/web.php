@@ -28,6 +28,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/qrcodes/download', [QrCodeController::class, 'download'])->name('qrcodes.download');
     Route::post('/qrcodes/events/{event}/regenerate', [QrCodeController::class, 'regenerateEvent'])->name('qrcodes.events.regenerate');
     Route::post('/qrcodes/photos/{photo}/regenerate', [QrCodeController::class, 'regeneratePhoto'])->name('qrcodes.photos.regenerate');
+    Route::post('/qrcodes/regenerate-all', [QrCodeController::class, 'regenerateAll'])->name('qrcodes.regenerate-all');
+
 
     Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics.index');
 
@@ -56,3 +58,49 @@ Route::get('/photo/{id}/download', [GuestController::class, 'downloadPhoto'])->n
 Route::get('/qrcode/download', [GuestController::class, 'downloadQr'])->name('guest.qrcode.download');
 
 require __DIR__.'/auth.php';
+
+use Illuminate\Support\Facades\Artisan;
+
+Route::get('/link-fix', function() {
+    $publicStorage = public_path('storage');
+    $appPublic = storage_path('app/public');
+    
+    // 1. Create directory if missing
+    if (!file_exists($publicStorage)) {
+        mkdir($publicStorage, 0775, true);
+    }
+
+    // 2. Migration: Move files from private storage to public storage
+    if (file_exists($appPublic) && is_dir($appPublic)) {
+        $files = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($appPublic, RecursiveDirectoryIterator::SKIP_DOTS),
+            RecursiveIteratorIterator::SELF_FIRST
+        );
+
+        foreach ($files as $file) {
+            $relativePath = str_replace($appPublic, '', $file->getRealPath());
+            $destPath = $publicStorage . $relativePath;
+
+            if ($file->isDir()) {
+                if (!file_exists($destPath)) mkdir($destPath, 0775, true);
+            } else {
+                if (!file_exists($destPath)) copy($file->getRealPath(), $destPath);
+            }
+        }
+    }
+
+    Artisan::call('storage:link');
+    
+    return response()->json([
+        'status' => 'success',
+        'message' => 'Files migrated and storage connection verified.',
+        'APP_URL' => config('app.url'),
+        'Is_Public_Folder_Ready' => is_dir($publicStorage) ? 'Yes' : 'No',
+        'GD_Extension_Enabled' => extension_loaded('gd') ? 'Yes' : 'No',
+        'Memory_Limit' => ini_get('memory_limit'),
+        'Sample_URL' => Storage::disk('public')->url('test.jpg')
+    ]);
+});
+
+
+

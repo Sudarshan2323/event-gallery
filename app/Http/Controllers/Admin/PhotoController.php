@@ -45,15 +45,22 @@ class PhotoController extends Controller
             ]);
 
             // Generate specific QR Code for each uploaded photo
-            $qrPath = 'events/' . $event->slug . '/qr/' . $photo->id . '.svg';
-            $qrCodeData = QrCodeGenerator::svg(url('/photo/' . $photo->id), 300);
-            Storage::disk('public')->put($qrPath, $qrCodeData);
+            // Generate QR Code with fallback
+            try {
+                $qrPath = 'events/' . $event->slug . '/qr/' . $photo->id . '.svg';
+                $qrCodeData = \App\Support\QrCodeGenerator::svg(url('/photo/' . $photo->id), 300);
+                Storage::disk('public')->put($qrPath, $qrCodeData);
+                $photo->update(['qr_code_path' => $qrPath]);
 
-            $photo->update(['qr_code_path' => $qrPath]);
+                // Apply branding (requires GD)
+                \App\Services\PhotoWatermarkService::apply($photo);
+            } catch (\Throwable $e) {
+                \Illuminate\Support\Facades\Log::error('QR/Branding failed: ' . $e->getMessage());
+            }
 
             // Keep future uploads untouched; print branding is handled separately.
 
-            // Fire WebSocket event for real-time guest gallery.
+            // Fire WebSocket event
             // If Reverb isn't running locally, we don't want uploads to fail.
             try {
                 broadcast(new PhotoUploaded($photo))->toOthers();
